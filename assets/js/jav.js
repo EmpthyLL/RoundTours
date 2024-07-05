@@ -290,7 +290,7 @@ function totalin(cate){
     let totalaja = 0
     if(currentCurrency == 'IDR'){
         total.forEach(tot => {
-            price = $(tot).html().slice(3)
+            price = ($(tot).html().slice(3)).split(',').join('')
             if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html().slice(1)) != 0){
                 totalaja += parseFloat(price) * $('.totalDay').html().slice(1)
             }
@@ -298,7 +298,7 @@ function totalin(cate){
                 totalaja += parseFloat(price)
             }
         })
-        $('.totalaja').html(simbol+Math.ceil(totalaja))
+        $('.totalaja').html(simbol+(Math.ceil(totalaja)).toLocaleString())
     }
     else if(currentCurrency == "EUR"){
         total.forEach(tot => {
@@ -310,7 +310,7 @@ function totalin(cate){
                 totalaja += parseFloat(price)
             }
         })
-        $('.totalaja').html(simbol+Math.ceil(totalaja))
+        $('.totalaja').html(simbol+(Math.ceil(totalaja)).toLocaleString())
     }
     else{
         total.forEach((tot) => {
@@ -322,12 +322,12 @@ function totalin(cate){
                 totalaja += parseFloat(price)
             }
         })
-        $('.totalaja').html(simbol+Math.ceil(totalaja))
+        $('.totalaja').html(simbol+(Math.ceil(totalaja)).toLocaleString())
     }
     const taxes = totalaja * 0.11
-    $('.taxes').html(simbol+Math.ceil(taxes))
+    $('.taxes').html(simbol+(Math.ceil(taxes)).toLocaleString())
     const subtotal = totalaja + taxes
-    $('.subtotal').html(Math.ceil(subtotal))
+    $('.subtotal').html(simbol+(Math.ceil(subtotal)).toLocaleString())
 }
 function day(from, to){
     let tanggal1 = new Date(from); 

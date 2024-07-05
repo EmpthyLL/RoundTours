@@ -1,0 +1,6 @@
+Nama Kelompok : Alkana
+Anggota Tim:
+	231110287 - Nicholas Kosasih 
+	231110521 - Howard Javier Leslie
+Teknologi : Library Javascript JQuery, Framework HTML, CSS, Javascript Bootstrap, Framework Icon Ionicons
+Link : https://www.templatemonster.com/landing-page-template/roundtours-free-tours-and-travel-landing-page-304317.html
