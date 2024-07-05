@@ -51,6 +51,8 @@ function statChecker(avg,rev=''){
 }
 function changeCurrent(prev,current){
     const price = document.querySelectorAll('.price')
+    total = changeCurrentOnly(prev,current,total)
+    subtotalaja = changeCurrentOnly(prev,current,subtotalaja)
     if(prev =='USD' && current == 'EUR'){
         price.forEach(prc =>{
             const harga = ($(prc).html()).slice(3)
@@ -87,6 +89,18 @@ function changeCurrent(prev,current){
             $(prc).html(`EUR€${Math.ceil(harga*0.00005696).toLocaleString()}`)
         })
     }
+    let simbol = ''
+    if(current == 'IDR'){
+        simbol = 'IDR'
+    }
+    else if(current == 'USD'){
+        simbol = 'US$'
+    }
+    else{
+        simbol = 'EUR€'
+    }
+    $('.totalaja').html(simbol+total.toLocaleString())
+    $('.subtotal').html(simbol+subtotalaja.toLocaleString())
 }
 function changeCurrentOnly(prev,current,value){
     if(prev =='USD' && current == 'EUR'){
@@ -276,7 +290,7 @@ function removeRating(index,currentRate){
     $(children).html(updateRate)
 }
 function totalin(cate){
-    const total = document.querySelectorAll('.total')
+    const totallist = document.querySelectorAll('.total')
     let simbol = ''
     if(currentCurrency == 'IDR'){
         simbol = 'IDR'
@@ -289,10 +303,10 @@ function totalin(cate){
     }
     let totalaja = 0
     if(currentCurrency == 'IDR'){
-        total.forEach(tot => {
+        totallist.forEach(tot => {
             price = ($(tot).html().slice(3)).split(',').join('')
-            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html().slice(1)) != 0){
-                totalaja += parseFloat(price) * $('.totalDay').html().slice(1)
+            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
+                totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
             }
             else{
                 totalaja += parseFloat(price)
@@ -301,10 +315,10 @@ function totalin(cate){
         $('.totalaja').html(simbol+(Math.ceil(totalaja)).toLocaleString())
     }
     else if(currentCurrency == "EUR"){
-        total.forEach(tot => {
+        totallist.forEach(tot => {
             price = $(tot).html().slice(4)
-            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html().slice(1)) != 0){
-                totalaja += parseFloat(price) * $('.totalDay').html().slice(1)
+            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
+                totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
             }
             else{
                 totalaja += parseFloat(price)
@@ -313,10 +327,10 @@ function totalin(cate){
         $('.totalaja').html(simbol+(Math.ceil(totalaja)).toLocaleString())
     }
     else{
-        total.forEach((tot) => {
+        totallist.forEach((tot) => {
             price = $(tot).html().slice(3)
-            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html().slice(1)) != 0){
-                totalaja += parseFloat(price) * $('.totalDay').html().slice(1)
+            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
+                totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
             }
             else{
                 totalaja += parseFloat(price)
@@ -324,9 +338,11 @@ function totalin(cate){
         })
         $('.totalaja').html(simbol+(Math.ceil(totalaja)).toLocaleString())
     }
+    total = totalaja
     const taxes = totalaja * 0.11
     $('.taxes').html(simbol+(Math.ceil(taxes)).toLocaleString())
     const subtotal = totalaja + taxes
+    subtotalaja = subtotal
     $('.subtotal').html(simbol+(Math.ceil(subtotal)).toLocaleString())
 }
 function day(from, to){
@@ -375,6 +391,8 @@ const rated = [0,0,0,0,0,0,0,0,0,0,0,0]
 let asdes = 'ascending'
 let darkModeOn = false
 let currentCurrency = 'USD'
+let total = 0
+let subtotalaja = 0
 const granny = document.querySelectorAll('.granny')
 $(document).on('input',function(e){
     if($(e.target).hasClass('CheckIn') || $(e.target).hasClass('CheckOut')){
