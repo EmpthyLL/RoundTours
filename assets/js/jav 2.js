@@ -56,6 +56,9 @@ function statChecker(avg,rev=''){
 }
 function changeCurrent(prev,current){
     const price = document.querySelectorAll('.price')
+    total = changeCurrentOnly(prev,current,total)
+    subtotalaja = changeCurrentOnly(prev,current,subtotalaja)
+    taxesaja = changeCurrentOnly(prev,current,taxesaja)
     if(prev =='USD' && current == 'EUR'){
         price.forEach(prc =>{
             const harga = ($(prc).html()).slice(3).split(',').join('')
@@ -102,6 +105,9 @@ function changeCurrent(prev,current){
     else{
         simbol = 'EUR€'
     }
+    $('.totalaja').html(simbol+total.toLocaleString())
+    $('.taxes').html(simbol+taxesaja.toLocaleString())
+    $('.subtotal').html(simbol+subtotalaja.toLocaleString())
 }
 function changeCurrentOnly(prev,current,value){
     if(prev =='USD' && current == 'EUR'){
@@ -302,17 +308,12 @@ function totalin(cate){
     else{
         simbol = 'EUR€'
     }
-    const totDay = document.querySelectorAll('.totalDay')
     let totalaja = 0
     if(currentCurrency == 'IDR'){
         totallist.forEach(tot => {
             price = ($(tot).html().slice(3)).split(',').join('')
-            if(totDay.length > 0){
-                if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
-                    totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
-                }                else{
-                    totalaja += parseFloat(price)
-                }
+            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
+                totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
             }
             else{
                 totalaja += parseFloat(price)
@@ -322,13 +323,9 @@ function totalin(cate){
     }
     else if(currentCurrency == "EUR"){
         totallist.forEach(tot => {
-            price = $(tot).html().slice(4).split(',').join('')
-            if(totDay.length > 0){
-                if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
-                    totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
-                }                else{
-                    totalaja += parseFloat(price)
-                }
+            price = $(tot).html().slice(4)
+            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
+                totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
             }
             else{
                 totalaja += parseFloat(price)
@@ -338,14 +335,9 @@ function totalin(cate){
     }
     else{
         totallist.forEach((tot) => {
-            price = $(tot).html().slice(3).split(',').join('')
-            if(totDay.length > 0){
-                if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
-                    totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
-                }
-                else{
-                    totalaja += parseFloat(price)
-                }
+            price = $(tot).html().slice(3)
+            if((cate == 'holidays' || cate == 'hotels') && ($('.totalDay').html()).slice(1) != 0){
+                totalaja += parseFloat(price) * ($('.totalDay').html()).slice(1)
             }
             else{
                 totalaja += parseFloat(price)
@@ -353,9 +345,12 @@ function totalin(cate){
         })
         $('.totalaja').html(simbol+((totalaja)).toLocaleString())
     }
+    total = totalaja
     const taxes = totalaja * 0.11
+    totalaja = taxes * 0.11
     $('.taxes').html(simbol+(Math.ceil(taxes)).toLocaleString())
     const subtotal = totalaja + taxes
+    subtotalaja = subtotal
     $('.subtotal').html(simbol+(Math.ceil(subtotal)).toLocaleString())
 }
 function day(from, to){
@@ -404,6 +399,9 @@ const rated = [0,0,0,0,0,0,0,0,0,0,0,0]
 let asdes = 'ascending'
 let darkModeOn = false
 let currentCurrency = 'USD'
+let total = 0
+let subtotalaja = 0       
+let taxesaja = 0
 const granny = document.querySelectorAll('.granny')
 $(document).on('input',function(e){
     if($(e.target).hasClass('CheckIn') || $(e.target).hasClass('CheckOut')){
@@ -770,9 +768,9 @@ $(document).click(function(e){
                             <tr>
                                 <td><input type="date" name="in" id="in" class="CheckIn"></td>
                                 <td><input type="date" name="out" id="out" class="CheckOut"></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}"  class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahDewasa">0</span><button type="button" data-key="${key}"  class="btn btn-outline-primary plus">+</button></div></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahAnak">0</span><button type="button" data-key="${key}"  class="btn btn-outline-primary plus">+</button></div></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}"  class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahBayi">0</span><button type="button" data-key="${key}"  class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahDewasa">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahAnak">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahBayi">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
                                 <td class="totOrg">0</td>
                                 <td><div class="howmany"><button type="button" class="btn btn-outline-primary kmrmin" data-price="${price}" data-cur="${theCurent}">-</button><span class="jumlah">0</span><button type="button" class="btn btn-outline-primary kmrplus" data-price="${price}" data-cur="${theCurent}">+</button></div></td>
                                 <td class="PrcPers price white total">${simbol}0</td>
@@ -782,19 +780,19 @@ $(document).click(function(e){
                             <tr>
                                 <td colspan="6"></td>
                                 <th>Total</th>
-                                <th class='totalaja price white'>${simbol}0</th>
+                                <th class='totalaja white'>${simbol}0</th>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td colspan="6"></td>
                                 <th>Taxes</th>
-                                <td class='taxes price white'>${simbol}0</td>
+                                <td class='taxes white'>${simbol}0</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td colspan="6"></td>
                                 <th>Subtotal</th>
-                                <th class='subtotal price white'>${simbol}0</th>
+                                <th class='subtotal white'>${simbol}0</th>
                             </tr>
                         </tbody>
                     </table>
@@ -834,9 +832,9 @@ $(document).click(function(e){
                                 <td><input type="datetime-local" name="in" id="in" class="departure"></td>
                                 <td><input type="datetime-local" name="out" id="out" class="arrival"></td>
                                 <td class='LamaTerbang'>0 Hour</td>
-                                <td><div class="howmany"><button type="button" data-key="${key}" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahDewasa">0</span><button type="button" data-key="${key}"  class="btn btn-outline-primary plus">+</button></div></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahAnak">0</span><button type="button" data-key="${key}"  class="btn btn-outline-primary plus">+</button></div></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahBayi">0</span><button type="button" data-key="${key}"  class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahDewasa">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahAnak">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahBayi">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
                                 <td class="totOrg">0</td>
                                 <td><div class="howmany"><button type="button"  data-price="${price}" data-cur="${theCurent}" class="btn btn-outline-primary seatmin">-</button><span class="jumlah">0</span><button type="button" data-price="${price}" data-cur="${theCurent}" class="btn btn-outline-primary seatplus">+</button></div></td>
                                 <td class="PrcPers price white total">${simbol}0</td>
@@ -845,19 +843,19 @@ $(document).click(function(e){
                             <tr>
                                 <td colspan="7"></td>
                                 <th>Total</th>
-                                <th class='totalaja price white'>${simbol}0</th>
+                                <th class='totalaja white'>${simbol}0</th>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td colspan="7"></td>
                                 <th>Taxes</th>
-                                <td class='taxes price white'>${simbol}0</td>
+                                <td class='taxes white'>${simbol}0</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td colspan="7"></td>
                                 <th>Subtotal</th>
-                                <th class='subtotal price white'>${simbol}0</th>
+                                <th class='subtotal white'>${simbol}0</th>
                             </tr>
                         </tbody>
                     </table>
@@ -896,9 +894,9 @@ $(document).click(function(e){
                             <tr>
                                 <td><input type="date" name="in" id="in" class="CheckIn"></td>
                                 <td><input type="date" name="out" id="out" class="CheckOut"></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahDewasa">0</span><button type="button"  data-key="${key}" class="btn btn-outline-primary plus">+</button></div></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahAnak">0</span><button type="button" data-key="${key}"  class="btn btn-outline-primary plus">+</button></div></td>
-                                <td><div class="howmany"><button type="button" data-key="${key}" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahBayi">0</span><button type="button" data-key="${key}" class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahDewasa">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahAnak">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
+                                <td><div class="howmany"><button type="button" class="btn btn-outline-primary minus">-</button><span class="jumlah jumlahBayi">0</span><button type="button" class="btn btn-outline-primary plus">+</button></div></td>
                                 <td class="totOrg">0</td>
                                 <td><div class="howmany"><button type="button"  data-price="${price}" data-cur="${theCurent}" class="btn btn-outline-primary facmin">-</button><span class="jumlah">0</span><button type="button" data-price="${price}" data-cur="${theCurent}" class="btn btn-outline-primary facplus">+</button></div></td>
                                 <td class="PrcPers price white total">${simbol}0</td>
@@ -908,19 +906,19 @@ $(document).click(function(e){
                             <tr>
                                 <td colspan="6"></td>
                                 <th>Total</th>
-                                <th class='totalaja price white'>${simbol}0</th>
+                                <th class='totalaja white'>${simbol}0</th>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td colspan="6"></td>
                                 <th>Taxes</th>
-                                <td class='taxes price white'>${simbol}0</td>
+                                <td class='taxes white'>${simbol}0</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td colspan="6"></td>
                                 <th>Subtotal</th>
-                                <th class='subtotal price white'>${simbol}0</th>
+                                <th class='subtotal white'>${simbol}0</th>
                             </tr>
                         </tbody>
                     </table>
@@ -952,19 +950,8 @@ $(document).click(function(e){
         else{
             simbol = 'EUR€'
         }
-        const key = $(e.target).data('index')
-        let category = ''
-        if([0,1,2,3].includes(key)){
-            category = 'holidays'
-        }
-        else if([4,5,6,7].includes(key)){
-            category = 'flights'
-        }
-        else{
-            category = 'hotels'
-        }
         $('.PrcPers').html(simbol + ((($('.jumlahDewasa').html()) * dewasa400) + (parseInt($('.jumlahAnak').html()) * anak250) + (parseInt($('.jumlahBayi').html() * bayi120))).toLocaleString())
-        totalin(category)
+        totalin()
     }
     if($(e.target).hasClass('plus')){
         e.preventDefault()
@@ -983,19 +970,8 @@ $(document).click(function(e){
         else{
             simbol = 'EUR€'
         }
-        const key = $(e.target).data('index')
-        let category = ''
-        if([0,1,2,3].includes(key)){
-            category = 'holidays'
-        }
-        else if([4,5,6,7].includes(key)){
-            category = 'flights'
-        }
-        else{
-            category = 'hotels'
-        }
         $('.PrcPers').html(simbol + ((($('.jumlahDewasa').html()) * dewasa400) + (parseInt($('.jumlahAnak').html()) * anak250) + (parseInt($('.jumlahBayi').html() * bayi120))).toLocaleString())
-        totalin(category)
+        totalin()
     }
     if($(e.target).hasClass('kmrmin')){
         e.preventDefault()
