@@ -274,6 +274,9 @@ html{
     font-weight: 900;
     font-size: 1.8rem;
 }
+button.btn.btn-search.subrek{
+    z-index: 0;
+}
 .moto{
     font-size: .9rem;
     color: black;
@@ -477,9 +480,17 @@ p.dark-mode{
     background: none;
     font-size: 2rem;
 }
+.bookmark{
+    margin-left: 2rem;
+}
 @media screen and (max-width: 992px) {
     .navbar-toggler.px-1.btn.rounded-0{
         display: flex;
+    }
+}
+@media screen and (max-width: 590px) {
+    .bookmark{
+        margin-left: 3rem;
     }
 }
 .productim:hover{
